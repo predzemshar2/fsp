@@ -22,17 +22,23 @@ source venv/bin/activate
 Установка зависимостей
 
 Создайте файл requirements.txt:
+
 Flask==2.3.2
+
 Flask-SQLAlchemy==2.5.1
+
 Flask-Login==0.6.2
+
 PyMySQL==1.0.2
+
 SQLAlchemy==2.0.54
-Werkzeug==3.1.9
+
 WTForms==3.2.2
+
 pydantic==2.13.5
+
 pydantic-settings==2.15.0
-PyJWT==2.3.0
-redis==3.5.3
+
 requests==2.25.1
 
 # Установите зависимости:
