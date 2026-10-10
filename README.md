@@ -57,18 +57,30 @@ flask run
 # Структура проекта
 
 проект/
+
 ├── app.py
+
 ├── models.py
+
 ├── config.py
+
 ├── auth.py
+
 ├── candidates.py
+
 ├──  employer.py
+
 ├── extensions.py
+
 ├── forms.py
+
 ├── templates/
-│   └── ...
+
+│   └── ... (html шаблоны)
+
 └── static/
-    └── ...
+
+    └── ... (картинки и css)
 
 # Конфигурация для продакшена
 Настройте Apache/mod_cgi
