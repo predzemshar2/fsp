@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}ПРОФИЛЬ{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h1>Запуск подтверждения квалификации</h1>
+    <p><strong>Направление:</strong> {{ g.user.profile.specialization|capitalize }}</p>
+    <p><strong>Грейд:</strong> {{ g.user.profile.grade.capitalize() }}</p>
+    <p>Не используйте ИИ или интернет при ответах, на ответы дается 20 минут.</p>
+
+    <form method="post" action="{{ url_for('candidate.start_test') }}">
+        <input type="hidden" name="_method" value="PUT"> <!-- Для защиты CSRF -->
+        <button type="submit">Приступить к подтверждению квалификации</button>
+    </form>
+</div>
+{% endblock %}

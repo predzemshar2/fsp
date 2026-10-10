@@ -1,0 +1,197 @@
+
+{% extends "base.html" %}
+{% block title %}ПРОФИЛЬ{% endblock %}
+{% block content %}
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <p class="{% if category == 'success' %}text-success{% else %}text-danger{% endif %}">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+<h1>Ваш профиль</h1>
+<div style="display: flex; align-items: center; margin-bottom: 1rem;"> 
+  
+  <img src="{{ url_for('static', filename='user.jpg') }}" height="100px" > 
+  {% set rating = (g.user.profile.total_score or 0) %} 
+  <span
+    style="color:#ffffff; font-size:1.2em; padding: 10px;">
+      Рейтинг: {{rating}} </span> 
+</div>
+
+
+
+    <p><strong>ФИО:</strong> {{ g.user.profile.full_name or 'Не указано' }}</p>
+    <p><strong>Направление:</strong> {{ g.user.profile.specialization or 'Не указано' }}</p>
+    <p><strong>Стек технологий</strong> {{ g.user.profile.tech_stack or 'Не указано' }}</p>
+    <p><strong>Грейд:</strong> {{ g.user.profile.grade or 'Не указано' }}</p>
+    <p><strong>Желаемая зарплата:</strong> {{ g.user.profile.desired_salary or '-' }} ₽</p>
+    <hr>
+    <p><strong>Подтверждения квалификации:</strong>
+      {% if not g.user.profile.test_started_at %}
+        <a href="{{ url_for('candidate.start_test') }}" class="button">Запустить тест</a>
+      {% else %}
+        {% if not g.user.profile.evaluation_score %}
+          Тест начат {{ g.user.profile.test_started_at.strftime('%d.%m.%Y %H:%M') }}<br>
+          <a href="{{ url_for('candidate.take_test') }}" class="button">Перейти к вопросам</a>
+        
+            <!-- if not g.user.profile.evaluation_score %} -->
+          <p><strong>Оценить ответы:</strong>
+              {% if g.user.profile.test_started_at and g.user.profile.user_answers_json|length > 2 %}
+                  <!-- Показываем кнопку только если есть сохранённые ответы -->
+                  <a href="{{ url_for('candidate.evaluate_test') }}" class="button">
+                    Отправить на оценку</a>
+              {% else %}
+                  Тест не был завершён или пустые ответы.
+              {% endif %}
+          </p>
+            <!-- else %} -->
+            <!-- elif g.user.profile.evaluation_score >= 50 %} -->
+               
+
+        {% else %}
+          Оценка: {{ g.user.profile.evaluation_score or '-' }} / 100 . Пройти тест заново можно через месяц <br>
+          
+
+
+          <!-- <p><strong>Общая оценка:</strong>  g.user.profile.evaluation_score }} / 100 ✅</p> -->
+          {% if g.user.role == 'candidate' and g.user.profile.evaluation_score %}
+              <a href="{{ url_for('candidate.profile_more', candidate_id=g.user.profile.id) }}" class="button">Подробнее</a>
+          {% elif g.user.role == 'employer' and candidate.evaluation_score %}
+              <a href="{{ url_for('candidate.profile_more', candidate_id=candidate.id) }}" class="button">Подробнее</a>
+          {% endif %}
+
+          <!-- <a href=" url_for('candidate.profile_more') }}" class="button">Подробнее</a> -->
+
+          {% if g.user.profile.evaluation_score < 50 %}
+            <p><strong>Внимание!</strong> Ваша текущая оценка ниже 50 баллов.</p>
+            <form method="post" action="{{ url_for('candidate.downgrade_grade') }}">
+                <input type="hidden" name="_method" value="PUT">
+                <button type="submit">Понизить грейд и пройти тест заново</button>
+            </form>
+          {% endif %}
+
+        {% endif %}
+      {% endif %}
+    </p>
+    
+    <p><strong>ID участника ФСП:</strong> {{ g.user.profile.fsp_id }}</p> <p><strong>Достижения ФСП:</strong> {{ g.user.profile.fsp_achievements }}
+      {% if g.user.profile %} 
+        {% if g.user.profile.fsp_achievements_confirmed>0 %} 
+        ✅ Подтверждены (+5 баллов) 
+        {% else %}
+          <form method="post" action="{{ url_for('candidate.confirm_fsp') }}"> <input type="hidden" name="_method" value="PUT">
+        <!-- Для защиты CSRF --> 
+        <button type="submit" class="button">
+          Запросить подтверждение</button> 
+        </form> 
+        {% endif %}
+      {% endif %}
+    </p>
+    <hr>
+    <p><strong>Резюме:</strong></p>
+    <div style="white-space: pre-line;">{{ g.user.profile.resume_text or '(пусто)' }}</div>
+    
+    <br>
+    <a class="button" href="{{ url_for('candidate.edit_profile') }}">Редактировать профиль</a>
+    
+    <!-- В профиле кандидата -->
+    <h2>Полученные приглашения</h2>
+    <div class="invitations">
+        {% if invitations %}
+            <ul>
+                {% for invitation in invitations %}
+                    <li>
+                        <!-- <strong>Работодатель:</strong>  invitation.sender.name }}<br> -->
+                        <strong>⚡️Сообщение:</strong> {{ invitation.message_text }}<br>
+                        <!-- <strong>Зарплата:</strong> invitation.salary_offer }}<br> -->
+                        <strong>Статус:</strong> 
+                        {% if invitation.status == 'sent' %}
+                            Ожидает ответа
+                        {% elif invitation.status == 'viewed' %}
+                            Просмотрено
+                        {% elif invitation.status == 'accepted' %}
+                            Принято
+                        {% endif %}
+                        
+                        {% if invitation.status == 'sent' %}
+                            <a href="{{ url_for('accept_invitation', invitation_id=invitation.id) }}">Принять</a>
+                            <a href="{{ url_for('decline_invitation', invitation_id=invitation.id) }}">Отклонить</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Нет активных приглашений</p>
+        {% endif %}
+    </div>
+
+    
+</div>
+<div class="container">
+
+<p><strong>Дополнительные направления:</strong>
+{% if g.user.profile.additional_specializations %}
+    {% for spec in g.user.profile.additional_specializations %}
+        {{spec.specialization_name}}<br>
+    {% endfor %}
+{% else %}
+    Нет добавленных специальностей.
+{% endif %}
+</p>
+
+<form method="post" action="{{ url_for('candidate.add_additional_spec') }}" style="display:inline;">
+    <!-- Используем выбор из формы -->
+    {{ form.csrf_token() }}
+    
+    <label>Добавить направление:</label>
+
+     <!-- form.specialization(class_='select', id='new-speceralization-select') }} -->
+    <select name="new_specialization">
+    <!-- Вместо value=текст используем value=ключ -->
+    {% for key, label in form.specialization.choices %}
+        <option value="{{key}}">{{label}}</option>
+    {% endfor %}
+</select>
+    <button type="submit">Добавить</button>
+</form>
+
+<script>
+// Небольшой JS-код для удобства пользователя
+document.getElementById('new-speceralization-select').addEventListener('change', function() {
+    // Если пользователь выбрал "Выберите...", кнопка будет отключена
+    document.querySelector('button[type="submit"]').disabled = this.value === "";
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const selectEl = document.querySelector('#new-specialization-select');
+    const submitBtn = document.querySelector('form[action="/add-additional-spec"] button[type="submit"]');
+
+    // Блокируем кнопку сразу после загрузки страницы
+    updateButtonState();
+
+    // Обновляем состояние кнопки при изменении селекта
+    selectEl.addEventListener('change', updateButtonState);
+
+    function updateButtonState() {
+        submitBtn.disabled = !selectEl.value || selectEl.value === "";
+    }
+});
+</script>
+</div>
+
+{% if g.user %}
+<div class="logout">
+  <form method="post" action="{{ url_for('auth.logout') }}">
+    <!-- CSRF-токен нужен только если вы используете Flask-WTF -->
+    <!--  form.csrf_token() }} -->
+    <button type="submit">Выйти</button>
+  </form>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- <div style="max-width: 800px; margin: 2rem auto; padding: 2rem;  border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);"> -->
+  
+<div class="container"> 
+  <div style="display: flex; align-items: center; margin-bottom: 1.5rem; gap: 1rem;"> 
+    <img src="{{ url_for('static', filename='user.jpg') }}" alt="Фото" height="100px" style="border-radius: 50%; object-fit: cover;"> 
+    
+    {% set rating = (candidate.total_score or 0) %} 
+    <div>
+        <h2>{{ candidate.full_name or 'Не указано' }}</h2>
+        <span style="color: #28a745; font-size: 1.2em; font-weight: bold;">
+            Рейтинг: {{ rating }}
+        </span>
+    </div>
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid #eee; margin: 1.5rem 0;">
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div>
+      <p><strong>Направление:</strong> {{ candidate.specialization or 'Не указано' }}</p>
+      <p><strong>Грейд:</strong> {{ candidate.grade or 'Не указано' }}</p>
+      <p><strong>Желаемая зарплата:</strong> {{ candidate.desired_salary or '-' }} ₽</p>
+    </div>
+    <div>
+      <p><strong>Стек технологий:
+      <span style="  border-radius: 4px;  white-space: pre-wrap; color: #28a745;">
+        {{ candidate.tech_stack or 'Не указано' }}
+      </span></strong></p>
+    </div>
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid #eee; margin: 1.5rem 0;">
+
+  <div>
+    <h3>Квалификация и достижения</h3>
+    <p><strong>Оценка теста:</strong> <span style="  border-radius: 4px;  white-space: pre-wrap; color: #28a745;">{{ candidate.evaluation_score or 'Не сдавал' }} / 100</span></p>
+    <p><strong>Дата начала теста:</strong> 
+        {% if candidate.test_started_at %}
+            {{ candidate.test_started_at.strftime('%d.%m.%Y %H:%M') }}
+        {% else %}
+            Не приступал
+        {% endif %}
+
+        {% if g.user.role == 'employer' and candidate.evaluation_score %}
+            <a href="{{ url_for('candidate.profile_more', candidate_id=candidate.id) }}" class="button">Подробнее</a>
+        {% endif %}
+
+    </p>
+    <p><strong>ID участника ФСП:</strong> {{ candidate.fsp_id or 'Нет' }}</p>
+    <p><strong>Достижения ФСП:</strong> {{ candidate.fsp_achievements or 'Нет' }}</p>
+    
+    {% if candidate.fsp_achievements_confirmed %}
+        <p style="color: green; font-weight: bold;">✅ Достижения подтверждены (+5 баллов)</p>
+    {% else %}
+        <p style="color: #666;">Достижения не подтверждены</p>
+    {% endif %}
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid #eee; margin: 1.5rem 0;">
+
+  <div>
+    <h3>Резюме</h3>
+    <div style=" padding: 1rem; border-radius: 4px;">
+      {{ candidate.resume_text or '(Резюме отсутствует)' }}
+    </div>
+  </div>
+
+  <div style="margin-top: 2rem; text-align: right;">
+    <a href="{{ url_for('employer.dashboard') }}" style="color: #28a745; text-decoration: none;">← Назад к вакансиям</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Мой Сайт{% endblock %}</title>
+    <!-- <title>Вход | IT-Hackathon</title> -->
+    <!-- Подключение шрифта -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+</head>
+<body>
+    <main>
+        <img src="{{ url_for('static', filename='fsp.png') }}" width="500px" >
+        {% block content %}
+
+        {% endblock %}        
+        
+
+
+
+    </main>
+</body>
+</html>

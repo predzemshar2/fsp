@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Дашборд работодателя{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h1>Создание новой вакансии</h1>
+    <form method="post" action="">
+        {{ form.hidden_tag() }} <!-- Обязательный токен безопасности -->
+
+        <label for="title">Название вакансии:</label>
+        {{ form.title(class_='input') }}
+
+        <label>Направление:</label><br>
+        {{ form.specialization(class_='select') }}
+
+        <label>Грейд:</label><br>
+        {{ form.grade(class_='select') }}
+
+        <label>Стек технологий:</label><br>
+        <small>Перечислите технологии через запятую.</small><br>
+        {{ form.tech_stack(rows=4, class_='textarea') }}
+
+        <button type="submit">Опубликовать вакансию</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+
+{% extends "base.html" %}
+{% block title %}ПРОФИЛЬ{% endblock %}
+{% block content %}
+
+<div class="container">
+    
+    
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <p class="{% if category == 'success' %}text-success{% else %}text-danger{% endif %}">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <h1>Результаты технического тестирования</h1>
+
+    <p><strong>Общая оценка:</strong> {{ total_score|default('-') }} / 100</p>
+
+    <!-- Таблица -->
+    <table style="width:100%; border-collapse: collapse; margin-top: 1rem;">
+        <thead>
+            <tr>
+                <th style="border-bottom: 1px solid #ccc;">№</th>
+                <th style="border-bottom: 1px solid #ccc;">Вопрос</th>
+                <th style="border-bottom: 1px solid #ccc;">Ваш ответ</th>
+                <th style="border-bottom: 1px solid #ccc;">Баллы</th>
+                <th style="border-bottom: 1px solid #ccc;">Комментарий эксперта</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in evaluation_data %}
+                <tr>
+                    <td style="padding: 0.5em; border-bottom: 1px solid #eee;">{{item.num}}</td>
+                    <td style="padding: 0.5em; border-bottom: 1px solid #eee;">{{item.question | truncate(150)}}</td>
+                    <td style="padding: 0.5em; border-bottom: 1px solid #eee;">{{item.answer | default('(нет ответа)') | safe}}</td>
+                    <td style="padding: 0.5em; color:#ffffff; font-weight:bold; border-bottom: 1px solid #eee;">{{item.score}}/10</td>
+                    <td style="padding: 0.5em; border-bottom: 1px solid #eee;">{{item.feedback | safe}}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5"><i>Нет данных о тестировании.</i></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('candidate.profile') }}" class="button">Вернуться к профилю</a>
+
+
+    
+</div>
+{% endblock %}

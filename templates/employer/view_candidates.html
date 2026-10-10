@@ -1,0 +1,95 @@
+<!-- <!DOCTYPE html>
+<head><title>Кандидаты под вакансию</title></head>
+<body class="bg-fsp">
+<div class="profile-container">
+    <h1>Подходящие кандидаты для "{{ job.title }}"</h1>
+
+    <table style="width:100%; margin-top:1rem; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>ФИО</th>
+                <th>Рейтинг</th>
+                <th>Достижения ФСП</th>
+                <th>Оценка теста</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in job.candidates | sort(attribute='relevance_score', reverse=True) %}
+                <tr>
+                    <td>{{c.full_name or '(не указано)'}}</td>
+                    <td>{{getattr(c, 'total_score', '-')}} / 100</td>
+                    <td>{% if c.fsp_achievements_confirmed %}✅{% else %}-{% endif %}</td>
+                    <td>{{c.evaluation_score or '-'}} / 100</td>
+                    <td>
+                        <a href="{{ url_for('candidates.profile_view_only', profile_id=c.id) }}">Подробнее</a>
+                        |
+                        <a href="#" onclick="openInviteModal({{c.id}}, '{{c.full_name}}')">Пригласить</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5"><i>Пока нет подходящих кандидатов.</i></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Модальное окно для приглашения -->
+    <div id="invite-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Отправить приглашение кандидату</h2>
+            <input type="hidden" id="recipient-id">
+            <label for="salary-offer">Зарплата:</label>
+            <input type="number" id="salary-offer" placeholder="₽">
+            <textarea id="message-text" rows="6" placeholder="Текст сообщения"></textarea>
+            <button onclick="sendInvitation()">Отправить</button>
+        </div>
+    </div>
+
+    <script>
+    let currentRecipientId;
+
+    function openInviteModal(candidateId, name) {
+        document.getElementById('invite-modal').classList.remove('hidden');
+        document.getElementById('recipient-id').value = candidateId;
+        document.getElementById('message-text').placeholder = `Приветствую! Вас заинтересует позиция ${name}?`;
+    }
+
+    function closeModal() {
+        document.getElementById('invite-modal').classList.add('hidden');
+    }
+
+    async function sendInvitation() {
+        const data = {
+            recipient_id: document.getElementById('recipient-id').value,
+            salary_offer: document.getElementById('salary-offer').value || null,
+            message_text: document.getElementById('message-text').value.trim(),
+        };
+
+        try {
+            const response = await fetch("/send-invite", {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data),
+                credentials: 'include'
+            });
+
+            if (!response.ok) throw new Error(await response.text());
+            alert("Приглашение отправлено!");
+            location.reload();
+        } catch(err) {
+            console.error(err);
+            alert("Ошибка при отправке.");
+        }
+    }
+    </script>
+
+    <style>
+    /* Базовый стиль модального окна */
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+    .modal.hidden { display: none; }
+    .modal-content { background: white; padding: 2em; max-width: 80%; text-align: left; }
+    .close { float: right; font-size: 2rem; cursor: pointer; color: #EC1D35; }
+    </style>
+</div>
+</body> -->

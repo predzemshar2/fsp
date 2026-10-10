@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}ПРофиль работодателя{% endblock %}
+{% block content %}
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <p class="{% if category == 'success' %}text-success{% else %}text-danger{% endif %}">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <h1>{{ title }}</h1>
+
+    <form method="post">
+        {{ form.hidden_tag() }}
+
+        <label>Название компании:</label><br>
+        {{ form.company_name(class_="input") }}<br>
+
+        <label>Описание компании, ФИО работодателя(₽):</label><br>
+        {{ form.description(class_="input") }}<br>
+
+        <label>Контактный email для кандидатов:</label><br>
+        {{ form.contact_email(class_="input") }}<br>
+
+        
+        {{ form.submit(class_="button") }}
+    </form>
+</div>
+{% endblock %}

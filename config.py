@@ -1,0 +1,6 @@
+
+GIGACHAT_API_KEY = ""
+GIGACHAT_URL = "" 
+
+CLIENT_ID = "" 
+SECRET = ""

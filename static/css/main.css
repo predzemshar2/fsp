@@ -1,0 +1,118 @@
+body {
+    font-family: 'JetBrains Mono', monospace;
+    color: #EDEDED; /* Светло-серая подложка */
+    background-color: #1B1C21; /* Тёмный текст */
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; */
+    /* height: 100vh; */
+}
+
+.container_jobs {
+
+    width: 95vw;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 10px;
+    border: 2px solid #ededed42;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: left;
+    background-color: #1B1C21;
+}
+.logout {
+    width: 100%;
+    text-align: center;
+}
+.container {
+    /* width: 300px; */
+    width: 50vw;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 10px;
+    border: 2px solid #ededed42;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: left;
+    background-color: #1B1C21;
+}
+
+h1 {
+    color: #402FFF; /* Акцентный синий */
+    margin-bottom: 1rem;
+}
+
+select.select,
+input.input,
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.75em;
+    margin-top: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+}
+select.select,
+input.input,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #402FFF;
+    box-shadow: inset 0 0 5px #402FFF;
+}
+
+input.button, button {
+    width: 50%;
+    padding: 0.75em;
+    margin-top: 1em;
+    background-color: #402FFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: #3927FF;
+}
+
+.error-message {
+    color: #EC1D35; /* Ошибка красным */
+    font-size: 0.85rem;
+    margin-top: 0.5em;
+}
+p { line-height: 1.6; }
+
+    /* body { font-family: 'JetBrains Mono'; background-color: #EDEDED; color: #1B1C21; }
+        .profile-container {
+            width: 400px;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+            background-color: white;
+            margin: auto;
+            margin-top: 3rem;
+        } */
+
+        /* h1 { color: #402FFF; }*/
+
+textarea {
+    width: 100%;
+    min-height: 10vh;
+}
+a.button {
+    width: 50%;
+    display: inline-block;
+    padding: 0.75em;
+    margin-top: 1em;
+    background-color: #EC1D35; 
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+}
+a.button:hover { background-color: #c91a31; } 

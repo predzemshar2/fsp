@@ -1,0 +1,35 @@
+
+{% extends "base.html" %}
+{% block title %}РЕГИСТРАЦИЯ{% endblock %}
+{% block content %}
+
+    <div class="container">
+
+
+            <h1>{{ title }}</h1>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <p class="{% if category == 'success' %}text-success{% else %}text-danger{% endif %}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                {{ form.hidden_tag() }}
+
+                <label>Электронная почта:</label><br>
+                {{ form.email(class_="input") }}<br>
+                
+                <label>Пароль:</label><br>
+                {{ form.password(class_="input") }}<br>
+
+                <label>Выберите роль:</label><br>
+                {{ form.role(class_="select") }}<br>
+
+                {{ form.submit(class_="button") }}
+            </form>
+            <a class="button" href="{{ url_for('auth.login') }}">Уже регистрировались?</a>
+    </div>
+{% endblock %}

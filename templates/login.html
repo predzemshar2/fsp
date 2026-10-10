@@ -1,0 +1,24 @@
+
+{% extends "base.html" %}
+{% block title %}ПРОФИЛЬ{% endblock %}
+{% block content %}
+
+    <div class="container">
+        <h1>Авторизация</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <p class="error-message">{{ message }}</p>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <input type="email" name="email" placeholder="Электронная почта" required autofocus>
+            <input type="password" name="password" placeholder="Пароль" required>
+            <button type="submit">Войти</button>
+        </form>
+        <a class="button" href="{{ url_for('auth.register') }}">Регистрация</a>
+    </div>
+{% endblock %}

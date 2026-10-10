@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Дашборд работодателя{% endblock %}
+{% block content %}
+
+<div class="container_jobs">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <p class="{% if category == 'success' %}text-success{% else %}text-danger{% endif %}">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}    
+    
+    <h1>Дашборд работодателя </h1>
+    <p></p>{{ g.user.email }} (id={{ g.user.id }})</p>
+    <p>Компания: {{ company_name or '-' }}</p>
+    <p>Описание: {{ description or '-' }}</p>
+
+    <a href="{{ url_for('employer.edit_profile_e') }}" class="button">Заполнить профиль работодателя</a>
+
+
+
+    
+    <a href="{{ url_for('employer.create_job') }}" class="button">Создать вакансию</a>
+
+    <h2>Ваши вакансии </h2>
+
+    {% if job_count > 0 %}
+      <p>Всего: {{ job_count }}</p>
+      {% for jwc in jobs_with_candidates %}
+        {% set job = jwc.obj %}
+        {% set candidates = jwc.candidates %}
+        {% set grade_display = jwc.grade_display %}
+
+        <div style="margin-bottom: 1.5rem; border: 1px solid #ddd; padding: 1rem;">
+          <h3>Вакансия: {{ job.title }}   </h3>
+          <p>
+            <strong>Грейд:</strong> {{ grade_display }} |
+            <strong>Направление:</strong> {{ job.specialization or '—' }} |
+            <strong>Стек:</strong> {{ job.tech_stack or '—' }}
+          
+            <!-- <strong>канд:</strong>  jwc.cand }} -->
+            
+          </p>
+
+          <h4>Подходящие кандидаты (до 30, по рейтингу и стеку):</h4>
+          {% if candidates|length == 0 %}
+            <p>Кандидатов по этому направлению с похожим стеком пока нет.</p>
+          {% else %}
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="border-bottom: 1px solid white;">
+                  <th>ID</th>
+                  <th style="text-align: center;">ФИО</th>
+                  <th>Желаемая ЗП</th>
+                  <th>Стек</th>
+                  <th>Грейд</th>
+                  <!-- <th>Оценка теста</th> -->
+                  <th>Рейтинг</th>
+                  <th>Достижения ФСП</th>
+                  <!-- <th>Подтверждены достижения</th> -->
+                  <th>Приглашение</th>
+                  <!-- <th>Совпадение стека</th> -->
+                </tr>
+              </thead>
+              <tbody>
+                {% for c in candidates %}
+                  <tr>
+                    <td>{{ c.profile_id }}</td>
+                    <td>
+                      <a href="{{ url_for('employer.view_candidate_profile', candidate_id=c.profile_id) }}" 
+                        style="text-decoration: none; color: #007bff; font-weight: bold;">
+                        👤 {{ c.full_name or '—' }}
+                      </a>
+                    </td>
+                    <td>{{ c.desired_salary or '—' }}</td>
+                    <td style="white-space: nowrap; max-width: 200px; overflow: hidden; text-overflow: ellipsis;">{{ c.tech_stack or '—' }}   </td>
+                    <td>
+                      {% if c.evaluation_score>50 %}
+                       <span style="color: green; font-weight: bold;">✓ </span>
+                      {% endif %}
+                      {{ c.grade or '—' }}</td>
+                    <!-- <td>{{ c.evaluation_score }}</td> -->
+                    <td style="text-align: center;"><strong>{{ c.total_score }}</strong></td>
+                    <td style="max-width: 250px; white-space: normal;">
+                      {% if c.fsp_achievements_confirmed %}
+                        {% if c.fsp_achievements_confirmed>0 %}
+                          <span style="color: green; font-weight: bold;">✓ </span>
+                        {% endif %}
+                      {% endif %}
+                      {{ c.fsp_achievements or '—' }}</td>
+                    <!-- <td></td> -->
+                    <td>
+                      
+                      {% if c.employer_invitation_id %}
+                        <span style="color: green; font-weight: bold;">✅  ✉️</span>
+                      {% else %}
+                        <form action="{{ url_for('employer.invite_candidate') }}" method="POST" style="display:inline;">
+                          <input type="hidden" name="job_id" value="{{ job.id }}">
+                          <input type="hidden" name="candidate_profile_id" value="{{ c.profile_id }}">
+                          <input type="hidden" name="salary_offer" value="{{ c.desired_salary }}">
+                          <input type="hidden" name="message_text" value="Приглашаем вас на собеседование по вакансии {{ job.title }}! {{ company_name or '-' }}. Подробнее: {{ description or '-' }}">
+                          
+                          <button type="submit" style="
+                            background-color: #007bff; 
+                            color: white; 
+                            border: none; 
+                            padding: 8px 12px; 
+                            border-radius: 4px; 
+                            cursor: pointer;
+                            font-size: 0.9em;
+                            width: 100%;
+                          " onsubmit="this.disabled=true;">Пригласить </button>
+                        </form>
+                      {% endif %}
+                    
+                    </td>
+                    <!-- <td>
+                       if c.stack_match %}
+                        <span style="color: green; font-weight: bold;">✓ Совпадает</span>
+                      
+                    </td> -->
+
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>У вас пока нет опубликованных вакансий.</p>
+    {% endif %}
+  </div>
+  {% if g.user %}
+  <div class="logout">
+    <form method="post" action="{{ url_for('auth.logout') }}">
+      <!-- CSRF-токен нужен только если вы используете Flask-WTF -->
+      <!--  form.csrf_token() }} -->
+      <button type="submit">Выйти</button>
+    </form>
+  </div>
+{% endif %}
+{% endblock %}

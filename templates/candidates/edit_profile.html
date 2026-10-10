@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}ПРОФИЛЬ{% endblock %}
+{% block content %}
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <p class="{% if category == 'success' %}text-success{% else %}text-danger{% endif %}">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <h1>Редактировать профиль</h1>
+
+    <form method="post">
+        {{ form.hidden_tag() }}
+
+        <label>ФИО:</label><br>
+        {{ form.full_name(class_="input") }}<br>
+
+        <label>Желаемая зарплата (₽):</label><br>
+        {{ form.desired_salary(class_="input") }}<br>
+
+        <label>Направление:</label><br>
+        {{ form.specialization(class_="select") }}<br>
+
+        <label>Технологии (через запятую):</label><br>
+        <small>{{ form.tech_stack.description }}</small><br>
+        {{ form.tech_stack(class_="input") }}<br>
+
+        <label>Грейд:</label><br>
+        {{ form.grade(class_="select") }}<br>
+
+        <label>ID участника ФСП:</label><br>
+        <!-- <small>Для подтверждения квалификации.</small><br> -->
+        {{ form.fsp_id(class_="input") }}<br>
+        
+        <label>Достижения участника ФСП:</label><br>
+        {{ form.fsp_achievements(class_="input") }}<br>
+
+        <label>Краткое резюме:</label><br>
+        {{ form.resume_text(class_="textarea") }}<br>
+
+        {{ form.submit(class_="button") }}
+    </form>
+</div>
+{% endblock %}
